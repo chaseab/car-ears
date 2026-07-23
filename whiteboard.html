@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Ears — Whiteboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="wb-page">
+
+  <nav class="wb-nav">
+    <a href="index.html" class="back-btn">&#8592; home</a>
+    <h1 class="wb-title">&#x2726; Whiteboard</h1>
+    <div class="wb-actions">
+      <button class="wb-btn" id="wb-copy-btn" title="Copy whiteboard items to paste to Claude for research expansion">
+        &#x1F4CB; Copy for Claude
+      </button>
+      <button class="wb-btn wb-btn--danger" id="wb-clear-btn">Clear all</button>
+    </div>
+  </nav>
+
+  <div id="wb-copy-toast" class="wb-toast" hidden>
+    Copied! Paste to Claude and say &#x201C;refresh whiteboard&#x201D;
+  </div>
+
+  <div class="wb-canvas" id="wb-canvas">
+    <div class="wb-empty" id="wb-empty" hidden>
+      <p>No notes yet.</p>
+      <p>Open a notebook, activate the &#x2726; capture cursor, then click any line.</p>
+    </div>
+  </div>
+
+  <script src="whiteboard.js"></script>
+</body>
+</html>
