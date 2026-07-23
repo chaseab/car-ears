@@ -4,13 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Car Ears</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-  <div class="container">
-    <h1>Car Ears</h1>
-    <p>Your app is live. Start editing <code>index.html</code> to build something.</p>
-  </div>
+<body class="home-page">
+  <main class="home-container">
+    <header class="home-header">
+      <h1 class="site-title">Car Ears</h1>
+      <p class="site-subtitle">internship &amp; career planning</p>
+    </header>
+
+    <div class="books-shelf">
+      <a href="notepad-1.html" class="book" id="book-1">
+        <div class="book-spine" id="spine-1"></div>
+        <div class="book-cover" id="cover-1">
+          <span class="book-label" id="label-1">Notebook One</span>
+          <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
+        </div>
+      </a>
+
+      <a href="notepad-2.html" class="book" id="book-2">
+        <div class="book-spine" id="spine-2"></div>
+        <div class="book-cover" id="cover-2">
+          <span class="book-label" id="label-2">Notebook Two</span>
+          <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
+        </div>
+      </a>
+    </div>
+
+    <p class="home-footer">chase &amp; valeria</p>
+  </main>
+
   <script src="script.js"></script>
 </body>
 </html>

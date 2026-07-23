@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Car Ears — Notebook Two</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="notepad-page">
+  <div class="notepad-wrap">
+    <div class="rings-col">
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+      <div class="ring"></div>
+    </div>
+
+    <div class="paper">
+      <div class="paper-header">
+        <a href="index.html" class="back-btn">&#8592; home</a>
+        <div
+          id="pad-title"
+          class="pad-title"
+          contenteditable="true"
+          spellcheck="false"
+          aria-label="Notebook title"
+        >Notebook Two</div>
+        <div class="swatches" aria-label="Accent color">
+          <button class="swatch" data-accent="terracotta" style="background:#b5613a" title="Terracotta"></button>
+          <button class="swatch" data-accent="sage"        style="background:#6b8f71" title="Sage"></button>
+          <button class="swatch" data-accent="blue"        style="background:#5b7fa6" title="Blue"></button>
+          <button class="swatch" data-accent="plum"        style="background:#7d5a7a" title="Plum"></button>
+        </div>
+      </div>
+
+      <div
+        id="pad-content"
+        class="pad-content"
+        contenteditable="true"
+        spellcheck="true"
+        data-placeholder="Start writing&#x2026;"
+        aria-label="Notebook content"
+      ></div>
+
+      <div class="pad-footer">
+        <span id="word-count" class="word-count">0 words</span>
+      </div>
+    </div>
+  </div>
+
+  <script>const PAD_ID = 2;</script>
+  <script src="notepad.js"></script>
+</body>
+</html>
