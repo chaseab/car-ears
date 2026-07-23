@@ -10,6 +10,30 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="home-page">
+
+  <!-- Scrim behind sticker panel -->
+  <div id="sticker-scrim" class="sticker-scrim" hidden></div>
+
+  <!-- Sticker panel -->
+  <div id="sticker-panel" class="sticker-panel" hidden>
+    <div class="sticker-panel-header">
+      <span class="sticker-panel-title">Add a sticker</span>
+      <button class="sticker-panel-close" id="sticker-panel-close" aria-label="Close">&#215;</button>
+    </div>
+
+    <span class="sticker-section-label">Library</span>
+    <div class="sticker-grid" id="sticker-library"></div>
+
+    <div class="sticker-divider"></div>
+
+    <span class="sticker-section-label">Your stickers</span>
+    <label class="sticker-upload-btn">
+      + Upload image
+      <input type="file" id="sticker-upload-input" accept="image/*" style="display:none">
+    </label>
+    <div class="sticker-grid" id="custom-sticker-grid"></div>
+  </div>
+
   <main class="home-container">
     <header class="home-header">
       <h1 class="site-title">Car Ears</h1>
@@ -20,16 +44,26 @@
       <a href="notepad-1.html" class="book" id="book-1">
         <div class="book-spine" id="spine-1"></div>
         <div class="book-cover" id="cover-1">
-          <span class="book-label" id="label-1">Notebook One</span>
+          <span
+            class="book-label"
+            id="label-1"
+          >Notebook One</span>
           <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
+          <div class="sticker-layer" id="sticker-layer-1"></div>
+          <button class="sticker-add-btn" id="add-sticker-1" title="Add sticker">&#x2726;</button>
         </div>
       </a>
 
       <a href="notepad-2.html" class="book" id="book-2">
         <div class="book-spine" id="spine-2"></div>
         <div class="book-cover" id="cover-2">
-          <span class="book-label" id="label-2">Notebook Two</span>
+          <span
+            class="book-label"
+            id="label-2"
+          >Notebook Two</span>
           <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
+          <div class="sticker-layer" id="sticker-layer-2"></div>
+          <button class="sticker-add-btn" id="add-sticker-2" title="Add sticker">&#x2726;</button>
         </div>
       </a>
     </div>
