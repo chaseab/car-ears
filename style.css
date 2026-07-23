@@ -986,6 +986,131 @@ body::after {
   font-style: italic;
 }
 
+/* =====================
+   SYNC SETTINGS
+   ===================== */
+
+.home-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.sync-gear-btn {
+  font-family: 'Caveat', cursive;
+  font-size: 1.05rem;
+  background: none;
+  border: none;
+  color: var(--ink-faded);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.sync-gear-btn:hover { color: var(--ink); }
+
+.sync-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #ccc;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.sync-dot--syncing { background: #f59e0b; animation: dotPulse 1s ease-in-out infinite; }
+.sync-dot--ok      { background: #6b8f71; }
+.sync-dot--err     { background: #c04040; }
+.sync-dot--idle    { background: #ccc; }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.sync-modal {
+  width: min(520px, 94vw);
+}
+
+.sync-instructions {
+  font-family: 'Lora', serif;
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+  background: var(--parchment);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 1.1rem;
+  line-height: 1.65;
+}
+
+.sync-instructions ol {
+  margin-left: 1.2rem;
+  margin-top: 6px;
+}
+
+.sync-instructions code {
+  background: rgba(0,0,0,0.07);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 0.85em;
+}
+
+.sync-field-label {
+  display: block;
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  color: var(--ink-faded);
+  margin-bottom: 4px;
+  margin-top: 10px;
+}
+
+.sync-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1.5px solid #d4c4a8;
+  border-radius: 6px;
+  font-family: 'Lora', serif;
+  font-size: 0.9rem;
+  background: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.sync-input:focus { border-color: var(--accent); }
+
+.sync-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.sync-status-msg {
+  font-family: 'Caveat', cursive;
+  font-size: 1rem;
+  color: var(--ink-faded);
+}
+
+.sync-clear-row {
+  margin-top: 0.9rem;
+  font-family: 'Lora', serif;
+  font-size: 0.82rem;
+  color: var(--ink-faded);
+}
+
+.sync-link-btn {
+  background: none;
+  border: none;
+  color: #c04040;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
 /* Whiteboard link on homepage */
 .wb-home-link {
   display: inline-flex;

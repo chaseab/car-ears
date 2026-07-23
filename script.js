@@ -21,6 +21,17 @@ var PREMADE_STICKERS = [
 var currentStickerTarget = null;
 
 // =====================
+// Sync dot
+// =====================
+
+function setSyncDot(state) {
+  var dot = document.getElementById('sync-dot');
+  if (!dot) return;
+  dot.className = 'sync-dot sync-dot--' + state;
+  dot.title = { idle: 'Sync not configured', syncing: 'Syncing…', ok: 'Synced', err: 'Sync error' }[state] || '';
+}
+
+// =====================
 // Book appearance
 // =====================
 
@@ -39,7 +50,7 @@ function applyBook(id) {
 }
 
 // =====================
-// Book label editing (from homepage)
+// Book label editing
 // =====================
 
 function initBookLabelEdit(id) {
@@ -63,6 +74,7 @@ function initBookLabelEdit(id) {
     var val = (labelEl.textContent || '').trim() || DEFAULTS[id].label;
     labelEl.textContent = val;
     localStorage.setItem('car-ears-' + id + '-label', val);
+    debouncedSave();
   });
 
   labelEl.addEventListener('keydown', function(e) {
@@ -74,27 +86,22 @@ function initBookLabelEdit(id) {
 }
 
 // =====================
-// Sticker data helpers
+// Sticker data
 // =====================
 
 function getStickers(bookId) {
-  try {
-    return JSON.parse(localStorage.getItem('car-ears-' + bookId + '-stickers') || '[]');
-  } catch(e) {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem('car-ears-' + bookId + '-stickers') || '[]'); }
+  catch(e) { return []; }
 }
 
 function saveStickers(bookId, stickers) {
   localStorage.setItem('car-ears-' + bookId + '-stickers', JSON.stringify(stickers));
+  debouncedSave();
 }
 
 function getCustomStickers() {
-  try {
-    return JSON.parse(localStorage.getItem('car-ears-custom-stickers') || '[]');
-  } catch(e) {
-    return [];
-  }
+  try { return JSON.parse(localStorage.getItem('car-ears-custom-stickers') || '[]'); }
+  catch(e) { return []; }
 }
 
 function addCustomSticker(src) {
@@ -102,6 +109,7 @@ function addCustomSticker(src) {
   if (custom.length >= 24) custom.shift();
   custom.push(src);
   localStorage.setItem('car-ears-custom-stickers', JSON.stringify(custom));
+  debouncedSave();
 }
 
 // =====================
@@ -184,7 +192,6 @@ function makeDraggable(el, bookId, stickerId) {
     if (!dragging) return;
     dragging = false;
     el.style.zIndex = '';
-
     var stickers = getStickers(bookId);
     var s = stickers.find(function(x) { return x.id === stickerId; });
     if (s) {
@@ -196,14 +203,13 @@ function makeDraggable(el, bookId, stickerId) {
 }
 
 // =====================
-// Place sticker
+// Sticker placement
 // =====================
 
 function placeSticker(bookId, type, content) {
   var stickers = getStickers(bookId);
-  var id = Math.random().toString(36).slice(2) + Date.now().toString(36);
   stickers.push({
-    id:      id,
+    id:      Math.random().toString(36).slice(2) + Date.now().toString(36),
     type:    type,
     content: content,
     x: 20 + Math.random() * 55,
@@ -221,7 +227,6 @@ function placeSticker(bookId, type, content) {
 function openStickerPanel(bookId) {
   currentStickerTarget = bookId;
 
-  // Build pre-made library
   var library = document.getElementById('sticker-library');
   library.innerHTML = '';
   PREMADE_STICKERS.forEach(function(emoji) {
@@ -235,7 +240,6 @@ function openStickerPanel(bookId) {
   });
 
   refreshCustomGrid();
-
   document.getElementById('sticker-panel').hidden = false;
   document.getElementById('sticker-scrim').hidden = false;
 }
@@ -264,7 +268,7 @@ function refreshCustomGrid() {
 }
 
 // =====================
-// Image upload + resize
+// Image upload
 // =====================
 
 function initUpload() {
@@ -296,35 +300,119 @@ function resizeAndStore(file) {
 }
 
 // =====================
+// Sync settings modal
+// =====================
+
+function openSyncModal() {
+  var cfg = syncConfig.get();
+  document.getElementById('sync-pat-input').value  = cfg.pat  ? '••••••••' : '';
+  document.getElementById('sync-gist-input').value = cfg.gistId || '';
+  document.getElementById('sync-clear-row').style.display = cfg.pat ? '' : 'none';
+  document.getElementById('sync-status-msg').textContent = '';
+  document.getElementById('sync-modal').hidden = false;
+  document.getElementById('sync-scrim').hidden = false;
+}
+
+function closeSyncModal() {
+  document.getElementById('sync-modal').hidden = true;
+  document.getElementById('sync-scrim').hidden = true;
+}
+
+function initSyncModal() {
+  document.getElementById('open-sync-btn').addEventListener('click', openSyncModal);
+  document.getElementById('sync-modal-close').addEventListener('click', closeSyncModal);
+  document.getElementById('sync-scrim').addEventListener('click', closeSyncModal);
+
+  document.getElementById('sync-save-btn').addEventListener('click', function() {
+    var pat    = document.getElementById('sync-pat-input').value.trim();
+    var gistId = document.getElementById('sync-gist-input').value.trim();
+    var msg    = document.getElementById('sync-status-msg');
+
+    if (!pat || pat === '••••••••') pat = syncConfig.get().pat;
+    if (!pat || !gistId) {
+      msg.textContent = 'Both fields required.';
+      msg.style.color = '#c04040';
+      return;
+    }
+
+    syncConfig.set(pat, gistId);
+    msg.textContent = 'Saving…';
+    msg.style.color = '';
+    setSyncDot('syncing');
+
+    syncPull().then(function(snap) {
+      if (snap) {
+        applySnapshot(snap);
+        applyBook(1);
+        applyBook(2);
+        renderStickers(1);
+        renderStickers(2);
+      }
+      return syncPush(buildSnapshot());
+    }).then(function() {
+      msg.textContent = 'Synced!';
+      setSyncDot('ok');
+      document.getElementById('sync-clear-row').style.display = '';
+      setTimeout(closeSyncModal, 1200);
+    }).catch(function() {
+      msg.textContent = 'Sync failed — check credentials.';
+      msg.style.color = '#c04040';
+      setSyncDot('err');
+    });
+  });
+
+  document.getElementById('sync-clear-btn').addEventListener('click', function() {
+    localStorage.removeItem('car-ears-sync-pat');
+    localStorage.removeItem('car-ears-sync-gist');
+    document.getElementById('sync-pat-input').value  = '';
+    document.getElementById('sync-gist-input').value = '';
+    document.getElementById('sync-clear-row').style.display = 'none';
+    document.getElementById('sync-status-msg').textContent = 'Cleared.';
+    setSyncDot('idle');
+  });
+}
+
+// =====================
 // Init
 // =====================
 
 document.addEventListener('DOMContentLoaded', function() {
-  applyBook(1);
-  applyBook(2);
+  // Show sync dot state immediately
+  setSyncDot(syncConfig.isReady() ? 'idle' : 'idle');
+
+  // Pull from sync then apply
+  if (syncConfig.isReady()) {
+    setSyncDot('syncing');
+    syncLoad(function(snap) {
+      applyBook(1);
+      applyBook(2);
+      renderStickers(1);
+      renderStickers(2);
+      setSyncDot(snap ? 'ok' : 'err');
+    });
+  } else {
+    applyBook(1);
+    applyBook(2);
+    renderStickers(1);
+    renderStickers(2);
+  }
+
   initBookLabelEdit(1);
   initBookLabelEdit(2);
-  renderStickers(1);
-  renderStickers(2);
 
   document.getElementById('add-sticker-1').addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    openStickerPanel(1);
+    e.preventDefault(); e.stopPropagation(); openStickerPanel(1);
   });
-
   document.getElementById('add-sticker-2').addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    openStickerPanel(2);
+    e.preventDefault(); e.stopPropagation(); openStickerPanel(2);
   });
 
   document.getElementById('sticker-panel-close').addEventListener('click', closeStickerPanel);
   document.getElementById('sticker-scrim').addEventListener('click', closeStickerPanel);
-
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeStickerPanel();
+    if (e.key === 'Escape') { closeStickerPanel(); closeSyncModal(); }
   });
 
   initUpload();
+  initSyncModal();
 });

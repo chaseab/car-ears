@@ -51,6 +51,7 @@ function scheduleSave() {
     if (html === '<br>') html = '';
     localStorage.setItem(lsKey('content'), html);
     updateWordCount();
+    if (typeof debouncedSave !== 'undefined') debouncedSave();
   }, 500);
 }
 
@@ -256,11 +257,23 @@ document.addEventListener('DOMContentLoaded', function() {
   var accent  = localStorage.getItem(lsKey('accent'))  || defaults.accent;
   var content = localStorage.getItem(lsKey('content')) || '';
 
-  titleEl.textContent = label;
-  document.title = 'Car Ears — ' + label;
-  applyAccent(accent);
-  if (content) contentEl.innerHTML = content;
-  updateWordCount();
+  function applyLocal() {
+    label   = localStorage.getItem(lsKey('label'))   || defaults.label;
+    accent  = localStorage.getItem(lsKey('accent'))  || defaults.accent;
+    content = localStorage.getItem(lsKey('content')) || '';
+    titleEl.textContent = label;
+    document.title = 'Car Ears — ' + label;
+    applyAccent(accent);
+    if (content) contentEl.innerHTML = content;
+    updateWordCount();
+  }
+
+  applyLocal();
+
+  // Pull from sync then re-apply if configured
+  if (typeof syncConfig !== 'undefined' && syncConfig.isReady()) {
+    syncLoad(function() { applyLocal(); });
+  }
 
   // Title
   titleEl.addEventListener('blur', function() {
@@ -268,6 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     titleEl.textContent = val;
     document.title = 'Car Ears — ' + val;
     localStorage.setItem(lsKey('label'), val);
+    if (typeof debouncedSave !== 'undefined') debouncedSave();
   });
   titleEl.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') { e.preventDefault(); titleEl.blur(); }

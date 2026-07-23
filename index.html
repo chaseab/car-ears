@@ -11,27 +11,51 @@
 </head>
 <body class="home-page">
 
-  <!-- Scrim behind sticker panel -->
+  <!-- Sticker scrim + panel (unchanged) -->
   <div id="sticker-scrim" class="sticker-scrim" hidden></div>
-
-  <!-- Sticker panel -->
   <div id="sticker-panel" class="sticker-panel" hidden>
     <div class="sticker-panel-header">
       <span class="sticker-panel-title">Add a sticker</span>
-      <button class="sticker-panel-close" id="sticker-panel-close" aria-label="Close">&#215;</button>
+      <button class="sticker-panel-close" id="sticker-panel-close">&#215;</button>
     </div>
-
     <span class="sticker-section-label">Library</span>
     <div class="sticker-grid" id="sticker-library"></div>
-
     <div class="sticker-divider"></div>
-
     <span class="sticker-section-label">Your stickers</span>
     <label class="sticker-upload-btn">
       + Upload image
       <input type="file" id="sticker-upload-input" accept="image/*" style="display:none">
     </label>
     <div class="sticker-grid" id="custom-sticker-grid"></div>
+  </div>
+
+  <!-- Sync settings modal -->
+  <div id="sync-scrim" class="sticker-scrim" hidden></div>
+  <div id="sync-modal" class="sticker-panel sync-modal" hidden>
+    <div class="sticker-panel-header">
+      <span class="sticker-panel-title">&#x2699; Sync setup</span>
+      <button id="sync-modal-close" class="sticker-panel-close">&#215;</button>
+    </div>
+    <div class="sync-instructions">
+      <p>Share notes between Chase &amp; Valeria via a private GitHub Gist.</p>
+      <ol>
+        <li>Go to <strong>github.com/settings/tokens</strong> &#x2192; Generate classic token &#x2192; check <code>gist</code> scope &#x2192; copy it.</li>
+        <li>Go to <strong>gist.github.com</strong> &#x2192; New gist &#x2192; filename <code>car-ears-data.json</code>, content <code>{}</code> &#x2192; Create <em>secret</em> gist.</li>
+        <li>Copy the Gist ID from the URL (the long hash).</li>
+        <li>Both of you enter the same values below (one-time setup).</li>
+      </ol>
+    </div>
+    <label class="sync-field-label">GitHub Personal Access Token (gist scope)</label>
+    <input type="password" id="sync-pat-input" class="sync-input" placeholder="ghp_xxxxxxxxxxxx" autocomplete="off" />
+    <label class="sync-field-label">Gist ID</label>
+    <input type="text" id="sync-gist-input" class="sync-input" placeholder="abc123def456..." autocomplete="off" />
+    <div class="sync-modal-actions">
+      <button id="sync-save-btn" class="wb-btn">Save &amp; sync now</button>
+      <span id="sync-status-msg" class="sync-status-msg"></span>
+    </div>
+    <p id="sync-clear-row" class="sync-clear-row">
+      Already configured. <button id="sync-clear-btn" class="sync-link-btn">Clear credentials</button>
+    </p>
   </div>
 
   <main class="home-container">
@@ -44,10 +68,7 @@
       <a href="notepad-1.html" class="book" id="book-1">
         <div class="book-spine" id="spine-1"></div>
         <div class="book-cover" id="cover-1">
-          <span
-            class="book-label"
-            id="label-1"
-          >Notebook One</span>
+          <span class="book-label" id="label-1">Notebook One</span>
           <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
           <div class="sticker-layer" id="sticker-layer-1"></div>
           <button class="sticker-add-btn" id="add-sticker-1" title="Add sticker">&#x2726;</button>
@@ -57,10 +78,7 @@
       <a href="notepad-2.html" class="book" id="book-2">
         <div class="book-spine" id="spine-2"></div>
         <div class="book-cover" id="cover-2">
-          <span
-            class="book-label"
-            id="label-2"
-          >Notebook Two</span>
+          <span class="book-label" id="label-2">Notebook Two</span>
           <span class="book-deco">&#x2014; &#x2726; &#x2014;</span>
           <div class="sticker-layer" id="sticker-layer-2"></div>
           <button class="sticker-add-btn" id="add-sticker-2" title="Add sticker">&#x2726;</button>
@@ -68,11 +86,16 @@
       </a>
     </div>
 
-    <a href="whiteboard.html" class="wb-home-link">&#x2726; whiteboard</a>
+    <div class="home-links">
+      <a href="whiteboard.html" class="wb-home-link">&#x2726; whiteboard</a>
+      <button id="open-sync-btn" class="sync-gear-btn" title="Sync settings">&#x2699; sync</button>
+      <div class="sync-dot" id="sync-dot" title="Sync status"></div>
+    </div>
 
     <p class="home-footer">chase &amp; valeria</p>
   </main>
 
+  <script src="sync.js"></script>
   <script src="script.js"></script>
 </body>
 </html>

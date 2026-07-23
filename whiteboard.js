@@ -17,6 +17,7 @@ function saveItems(items) {
 function deleteItem(id) {
   var items = getItems().filter(function(i) { return i.id !== id; });
   saveItems(items);
+  if (typeof debouncedSave !== 'undefined') debouncedSave();
   var el = document.querySelector('[data-sticky-id="' + id + '"]');
   if (el) el.remove();
   checkEmpty();
@@ -339,18 +340,21 @@ function checkEmpty() {
 // Init
 // =====================
 
-document.addEventListener('DOMContentLoaded', function() {
+function loadAndRender() {
   var items = getItems();
-
-  // Fetch AI expansions
   fetch('./whiteboard-expansions.json?v=' + Date.now())
     .then(function(r) { return r.json(); })
-    .then(function(data) {
-      render(items, data.expansions || []);
-    })
-    .catch(function() {
-      render(items, []);
-    });
+    .then(function(data) { render(items, data.expansions || []); })
+    .catch(function() { render(items, []); });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Pull sync first, then render
+  if (typeof syncConfig !== 'undefined' && syncConfig.isReady()) {
+    syncLoad(function() { loadAndRender(); });
+  } else {
+    loadAndRender();
+  }
 
   document.getElementById('wb-copy-btn').addEventListener('click', exportItems);
 
